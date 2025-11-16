@@ -1,6 +1,6 @@
 package ds;
 
-public class Node {
+/*public class Node {
 
 	private Card data;
 	private Node nextNode;
@@ -41,4 +41,37 @@ public class Node {
 		this.nextNode = nextNode;
 	}
 	
+}
+*/
+
+public class Node<T> {  // ← Add <T>
+    private T data;  // ← Change Card to T
+    private Node<T> nextNode;  // ← Add <T>
+    
+    public Node() {
+        this.data = null;
+        this.nextNode = null;
+    }
+    
+    public Node(T data) {  // ← Change Card to T
+        this.data = data;
+        this.nextNode = null;
+    }
+    
+    
+    public T getData() {  // ← Change Card to T
+        return data;
+    }
+    
+    public void setData(T data) {  // ← Change Card to T
+        this.data = data;
+    }
+    
+    public Node<T> getNextNode() {  // ← Add <T>
+        return nextNode;
+    }
+    
+    public void setNextNode(Node<T> nextNode) {  // ← Add <T>
+        this.nextNode = nextNode;
+    }
 }
