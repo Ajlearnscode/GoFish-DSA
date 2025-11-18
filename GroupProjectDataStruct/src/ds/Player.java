@@ -3,7 +3,7 @@ package ds;
 public abstract class Player {
 	
 	private String name;
-	private LinkedList <Card> hand;
+	protected LinkedList <Card> hand;
 	private int score;
 	private boolean isBot;
 	
@@ -23,6 +23,33 @@ public abstract class Player {
 	    this.name = obj.name;
 	    this.score = obj.score;
 	    this.isBot = obj.isBot;
+	    
+	}
+	
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public LinkedList<Card> getHand() {
+		return hand;
+	}
+	public void setHand(LinkedList<Card> hand) {
+		this.hand = hand;
+	}
+	public int getScore() {
+		return score;
+	}
+	public void setScore(int score) {
+		this.score = score;
+	}
+	public boolean isBot() {
+		return isBot;
+	}
+	public void setBot(boolean isBot) {
+		this.isBot = isBot;
 	}
 	
 	public LinkedList<Card> removeCard(String rank) {
