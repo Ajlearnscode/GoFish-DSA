@@ -17,7 +17,7 @@ public class BotPlayer extends Player {
 		if (hand.isEmpty()) {
 			return null;
 		}
-		//Counts how many card the bot has same way sir countnode set up
+		//Counts how many card the bot has same way sir count node set up
 		int handSize = 0;
 		Node <Card> curr = hand.getHead();
 		while (curr != null) {

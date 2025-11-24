@@ -23,6 +23,11 @@ public class Node<T> {
 		this.data = n.data;
 		this.next = n.next;
 	}
+	
+	public Node(T data) {
+	    this.data = data;
+	    this.next = null;
+	}
 
 	//Setters and getters
 	public T getData() {

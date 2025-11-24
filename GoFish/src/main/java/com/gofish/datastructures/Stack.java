@@ -1,5 +1,112 @@
 package main.java.com.gofish.datastructures;
 
-public class Stack {
+public class Stack<T> {
+	private Node<T> top;
 
+	// Default Constructor
+	public Stack() {
+		top = null;
+	}
+
+	// Getters and Setters
+	public Node<T> getTop() {
+		return top;
+	}
+
+	public void setTop(Node<T> top) {
+		this.top = top;
+	}
+
+	// Push Method - Adds an item to the top
+	public void push(T data) {
+		Node<T> temp = new Node<>(data);
+
+		if (temp != null) {
+			if (top == null) {
+				top = temp;
+			} else {
+				temp.setNext(top);
+				top = temp;
+			}
+		} else {
+			System.err.println("Failed to create and add a new node to the Stack!");
+		}
+	} // End of push Method
+
+	// Pop Method - Removes and returns the top item
+	public T pop() {
+		T result = null;
+
+		if (top == null) {
+			System.err.println("The stack is empty, therefore no Node can be removed.");
+		} else {
+			result = top.getData();
+			Node<T> temp = top;
+			top = top.getNext();
+			temp = null;
+		}
+		return result;
+	} // End of pop Method
+
+	// Peek Method - Returns the top item without removing it
+	public T peek() {
+		if (top == null) {
+			System.out.println("The stack is empty, cannot return any value.");
+			return null;
+		} else {
+			return top.getData();
+		}
+	} // End of peek Method
+
+	// isEmpty Method - Checks if the stack is empty
+	public boolean isEmpty() {
+		return top == null;
+	} // End of isEmpty Method
+
+	// Size Method - Returns how many items are in the stack
+	public int size() {
+		int count = 0;
+
+		if (top != null) {
+			Stack<T> tempStack = new Stack<>();
+			T tempData;
+
+			while (top != null) {
+				count++;
+				tempData = pop();
+				tempStack.push(tempData);
+			}
+
+			// Restore original stack
+			while (tempStack.getTop() != null) {
+				tempData = tempStack.pop();
+				push(tempData);
+			}
+		}
+		return count;
+	} // End of size Method
+
+	// Display Method - Prints the stack contents (for debugging)
+	public void display() {
+		if (top == null) {
+			System.out.println("The stack is empty. No Node in this Stack!");
+		} else {
+			Stack<T> tempStack = new Stack<>();
+			T tempData;
+
+			System.out.print("Stack (top to bottom): ");
+			while (top != null) {
+				tempData = pop();
+				System.out.print(tempData + " -> ");
+				tempStack.push(tempData);
+			}
+			System.out.println("null\n");
+
+			// Restore original stack
+			while (tempStack.getTop() != null) {
+				tempData = tempStack.pop();
+				push(tempData);
+			}
+		}
+	} // End of display Method
 }
