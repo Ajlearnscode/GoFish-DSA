@@ -4,25 +4,35 @@ import main.java.com.gofish.datastructures.LinkedList;
 import main.java.com.gofish.datastructures.Node;
 
 public abstract class Player {
-	private String name;
+	protected String name;
 	protected LinkedList <Card> hand;
-	private int score;
-	private boolean isBot;
+	protected int score;
+	protected boolean isBot;
 	
 	public Player () {
 		name = "";
-		hand = new LinkedList<>() ;
+		hand = null;
 		score = 0;
 		isBot = false;
 	}
+	
 	public Player (String name, LinkedList <Card> hand, int score, boolean isBot) {
 		this.name = name;
 		this.hand = hand;
 		this.score = score;
 		this.isBot = isBot;
 	}
+	
+	//Primary Constructor that is used with the create player method in the child classes
+	public Player (String name, int score, boolean isBot) {
+		this.name = name;
+		this.score = score;
+		this.isBot = isBot;
+	}
+	
 	public Player(Player obj) {
 	    this.name = obj.name;
+	    this.hand = obj.hand;
 	    this.score = obj.score;
 	    this.isBot = obj.isBot;
 	    
@@ -47,7 +57,7 @@ public abstract class Player {
 	public void setScore(int score) {
 		this.score = score;
 	}
-	public boolean isBot() {
+	public boolean getBot() {
 		return isBot;
 	}
 	public void setBot(boolean isBot) {
@@ -92,4 +102,17 @@ public abstract class Player {
 	//"In your removeCard() method, you're inside the Player class, not inside the LinkedList class. So you can't directly access hand.head to do head = head.getNextNode()"
 	//"Head deletion: Use hand.deleteFromFront() (method call) Middle/End deletion: Use prev.setNextNode(curr.getNextNode()) (teacher's direct style)"
 	public abstract String chooseRank();
+	
+	//Function used to create the required number of players
+	public abstract Player createPlayer();
+	//
+	public abstract boolean isBot();
+	
+	public abstract String toString();
+
+	
+	/*if(isBot()){
+	 * call the function that handles the bot logic
+	 * }
+	 * */
 }

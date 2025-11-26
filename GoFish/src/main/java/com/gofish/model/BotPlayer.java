@@ -8,10 +8,30 @@ import main.java.com.gofish.datastructures.Node;
 public class BotPlayer extends Player {
 
 	
-	public BotPlayer (String name ) {
-		super (name, new LinkedList<> (), 0, true);
+	public BotPlayer() {
+		super();
+	}
+	public BotPlayer(String name) {
+		super(name, new LinkedList<>(), 0, false);
 	}
 	
+	public BotPlayer (String name, LinkedList <Card> hand, int score, boolean isBot) {
+		super(name, hand, score, isBot);
+	}
+	
+	public BotPlayer(String name, int score, boolean isBot) {
+		super( name,  score,  isBot);
+	}
+	
+	public BotPlayer(BotPlayer hp) {
+		super( hp.name,  hp.score,  hp.isBot);
+	}
+	
+
+	public BotPlayer(Player p) {
+		super( p.name,  p.score,  p.isBot);
+	}
+
 	@Override
 	public String chooseRank() {
 		if (hand.isEmpty()) {
@@ -39,5 +59,30 @@ public class BotPlayer extends Player {
 		System.out.println("The bot asks for: "+ rank);
 		return rank;
 	}
+
+	@Override
+	public Player createPlayer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isBot() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	//@Override
+	//public String toString() {
+	//	return "Name: " + name +
+		//		"\nScore: " + score +
+		//		"\nIs Bot?:" + isBot + "\n";
+	//}
 
 }

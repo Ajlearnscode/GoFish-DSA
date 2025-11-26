@@ -25,7 +25,7 @@ public class LinkedList<T> {
 
 	@Override
 	public String toString() {
-		return "LinkedList [head =" + head + "]";
+		return  "" + head ;
 	}
 
 	public void insertAtFront(T data) {

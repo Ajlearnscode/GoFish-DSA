@@ -1,6 +1,11 @@
 package main.java.com.gofish.datastructures;
+import java.awt.List;
 
-public class Stack<T> {
+import main.java.com.gofish.model.Card;
+
+
+public class Stack<T> extends List{
+	private static final long serialVersionUID = 1L;
 	private Node<T> top;
 
 	// Default Constructor
@@ -64,7 +69,7 @@ public class Stack<T> {
 	} // End of isEmpty Method
 
 	// Size Method - Returns how many items are in the stack
-	public int size() {
+	public int stackSize() {
 		int count = 0;
 
 		if (top != null) {
@@ -109,4 +114,23 @@ public class Stack<T> {
 			}
 		}
 	} // End of display Method
+	
+	@Override
+	//AI HELP
+	public String toString() {
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("Card Stack: \n");
+
+	    Node<T> current = top;
+	    while (current != null) {
+	        sb.append(current.getData());
+	        if (current.getNext() != null) sb.append("\n");
+	        current = current.getNext();
+	        
+	    }
+
+	    sb.append(" ");
+	    return sb.toString();
+	}
+
 }
