@@ -2,86 +2,30 @@ package main.java.com.gofish.model;
 
 import java.util.Random;
 
+import main.java.com.gofish.datastructures.Node;
 import main.java.com.gofish.datastructures.Stack;
 
-public class Deck {
+public class Deck<T> {
 	// deck should have a total number of 52 cards
-	private Stack<Card> Card_Deck = new Stack<Card>(); // = Attribute Card Deck
+	//private Stack<Card> Card_Deck = new Stack<Card>(); // = Attribute Card Deck
+	private static Stack<Card> Card_Deck = Card.initializeCards(); // = Attribute Card Deck
 
-	// Method add cards to the deck initially
+	//Debug Method to check if the card have actually been added
+	public static void showDeck() {
+			System.out.println(Card_Deck.toString());
+	}
+	
+
 
 	public void shuffle() { // ========> Method to shuffle card deck
 		// Step 1 : Create temporary Stacks for shuffling
 		Stack<Card> tempStack_1 = new Stack<>();
-		// A
-		tempStack_1.push(new Card("A", "♦", "Red"));
-		tempStack_1.push(new Card("A", "♣", "Black"));
-		tempStack_1.push(new Card("A", "♥", "Red"));
-		tempStack_1.push(new Card("A", "♠", "Black"));
-		// 2s
-		tempStack_1.push(new Card("2", "♦", "Red"));
-		tempStack_1.push(new Card("2", "♣", "Black"));
-		tempStack_1.push(new Card("2", "♥", "Red"));
-		tempStack_1.push(new Card("2", "♠", "Black"));
-		// 3s
-		tempStack_1.push(new Card("3", "♦", "Red"));
-		tempStack_1.push(new Card("3", "♣", "Black"));
-		tempStack_1.push(new Card("3", "♥", "Red"));
-		tempStack_1.push(new Card("3", "♠", "Black"));
-		// 4s
-		tempStack_1.push(new Card("4", "♦", "Red"));
-		tempStack_1.push(new Card("4", "♣", "Black"));
-		tempStack_1.push(new Card("4", "♥", "Red"));
-		tempStack_1.push(new Card("4", "♠", "Black"));
 
 		Stack<Card> tempStack_2 = new Stack<>();
-		//5s
-		tempStack_2.push(new Card( "5",  "♦", "Red"));
-		tempStack_2.push(new Card( "5",  "♣", "Black"));
-		tempStack_2.push(new Card( "5",  "♥", "Red"));
-		tempStack_2.push(new Card( "5",  "♠", "Black"));
-		//6s
-		tempStack_2.push(new Card( "6",  "♦", "Red"));
-		tempStack_2.push(new Card( "6",  "♣", "Black"));
-		tempStack_2.push(new Card( "6",  "♥", "Red"));
-		tempStack_2.push(new Card( "6",  "♠", "Black"));
-		//7s
-		tempStack_2.push(new Card( "7",  "♦", "Red"));
-		tempStack_2.push(new Card( "7",  "♣", "Black"));
-		tempStack_2.push(new Card( "7",  "♥", "Red"));
-		tempStack_2.push(new Card( "7",  "♠", "Black"));
-		//8s
-		tempStack_2.push(new Card( "8",  "♦", "Red"));
-		tempStack_2.push(new Card( "8",  "♣", "Black"));
-		tempStack_2.push(new Card( "8",  "♥", "Red"));
-		tempStack_2.push(new Card( "8",  "♠", "Black"));
-		
+
 		Stack<Card> tempStack_3 = new Stack<>();
-		//9s
-		tempStack_3.push(new Card( "9",  "♦", "Red"));
-		tempStack_3.push(new Card( "9",  "♣", "Black"));
-		tempStack_3.push(new Card( "9",  "♥", "Red"));
-		tempStack_3.push(new Card( "9",  "♠", "Black"));
-		//10s
-		tempStack_3.push(new Card( "10",  "♦", "Red"));
-		tempStack_3.push(new Card( "10",  "♣", "Black"));
-		tempStack_3.push(new Card( "10",  "♥", "Red"));
-		tempStack_3.push(new Card( "10",  "♠", "Black"));
-		//Js
-		tempStack_3.push(new Card( "J",  "♦", "Red"));
-		tempStack_3.push(new Card( "J",  "♣", "Black"));
-		tempStack_3.push(new Card( "J",  "♥", "Red"));
-		tempStack_3.push(new Card( "J",  "♠", "Black"));
-		//Qs
-		tempStack_3.push(new Card( "Q",  "♦", "Red"));
-		tempStack_3.push(new Card( "Q",  "♣", "Black"));
-		tempStack_3.push(new Card( "Q",  "♥", "Red"));
-		tempStack_3.push(new Card( "Q",  "♠", "Black"));
-		//Ks
-		tempStack_3.push(new Card( "K",  "♦", "Red"));
-		tempStack_3.push(new Card( "K",  "♣", "Black"));
-		tempStack_3.push(new Card( "K",  "♥", "Red"));
-		tempStack_3.push(new Card( "K",  "♠", "Black"));
+
+		
 		// Step 2: Create an instance of the random class and relevant variables for
 		// randomization of the shuffle
 		Random r = new Random();
@@ -89,11 +33,15 @@ public class Deck {
 		int max = 50; // Inclusive upper bound
 		int iterationLimit = r.nextInt(max - min + 1) + min; // Generates a random number between the min and max limits
 																// for the shuffle loop
-
+////////////////////////////////////////////////////////////////////////
+		
+		
+		
+////////////////////////////////////////////////////////////////////////		
 		// Step 3: Begin the Shuffle loop
 		for (int i = 0; i <= iterationLimit; i++) {
 			// Sub-Step 3.1: Empty the card deck into 3 stacks at random
-			while (Card_Deck.isEmpty() == false) { // Empty the Card deck randomly into other stacks
+			while (!Card_Deck.isEmpty()) { // Empty the Card deck randomly into other stacks
 				Card card = Card_Deck.pop(); // Remove a card from the Deck
 				int deck_number = r.nextInt(3) + 1; // Select a temporary deck number at random to put the card
 				if (deck_number == 1) {
@@ -106,19 +54,19 @@ public class Deck {
 			}
 
 			// Sub-Step 3.2: Put Cards from stack 1 back on the Deck
-			while (tempStack_1.isEmpty() == false) {
+			while (!tempStack_1.isEmpty()) {
 				Card card = tempStack_1.pop();// remove card from the temporary deck
 				Card_Deck.push(card); // put it back in the main deck
 			}
 
 			// Sub-Step 3.3: Put Cards from stack 2 back on the Deck
-			while (tempStack_2.isEmpty() == false) {
+			while (!tempStack_2.isEmpty()) {
 				Card card = tempStack_2.pop();// remove card from the temporary deck
 				Card_Deck.push(card); // put it back in the main deck
 			}
 
 			// Sub-Step 3.4: Put Cards from stack 3 back on the Deck
-			while (tempStack_3.isEmpty() == false) {
+			while (!tempStack_3.isEmpty()) {
 				Card card = tempStack_3.pop();// remove card from the temporary deck
 				Card_Deck.push(card); // put it back in the main deck
 			}
@@ -145,5 +93,41 @@ public class Deck {
 	public boolean isEmpty() {
 		return Card_Deck.isEmpty(); // Uses Stack isEmpty() method
 	}
+	
+//#########################################################################################	
+
+    public int getCardCount() {
+        if (Card_Deck == null) {
+            return 0;
+        }
+        
+        // Use the Stack's stackSize() method
+        return Card_Deck.stackSize();
+    }
+    
+
+    public int cardsRemaining() {
+        return getCardCount();
+    }
+    
+
+    public void displayCardCount() {
+        int count = getCardCount();
+        System.out.println("=== Deck Status ===");
+        System.out.println("Cards remaining: " + count + " / 52");
+        
+        if (count == 0) {
+            System.out.println("⚠ DECK IS EMPTY!");
+        } else if (count < 10) {
+            System.out.println("⚠ Running low on cards!");
+        }
+        
+        System.out.println("===================\n");
+    }
+    
+
+    public boolean hasEnoughCards(int requiredCards) {
+        return getCardCount() >= requiredCards;
+    }
 
 }

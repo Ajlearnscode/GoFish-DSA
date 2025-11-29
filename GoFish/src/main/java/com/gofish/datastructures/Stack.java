@@ -39,19 +39,18 @@ public class Stack<T> extends List{
 	} // End of push Method
 
 	// Pop Method - Removes and returns the top item
+	
 	public T pop() {
-		T result = null;
-
-		if (top == null) {
-			System.err.println("The stack is empty, therefore no Node can be removed.");
-		} else {
-			result = top.getData();
-			Node<T> temp = top;
-			top = top.getNext();
-			temp = null;
-		}
-		return result;
-	} // End of pop Method
+	    T result = null;
+	    
+	    if (top == null) {
+	        System.err.println("The stack is empty, therefore no Node can be removed.");
+	    } else {
+	        result = top.getData();   // Get the data
+	        top = top.getNext();      // Move top to next node
+	    }
+	    return result;
+	}
 
 	// Peek Method - Returns the top item without removing it
 	public T peek() {

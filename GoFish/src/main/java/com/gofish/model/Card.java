@@ -56,11 +56,11 @@ public class Card {
 
 	@Override
 	public String toString() {
-		return "Rank: " + rank + "\nSuit: " + suit + "\nColour: " + colour + "\n";
+		return  rank + " " + suit + " " + colour + ", ";
 	}
 	
 	
-	public Stack<Card> initializeCards() {
+	public static Stack<Card> initializeCards() {
 		Stack <Card> mainStack = new Stack<>();
 		//A
 		mainStack.push(new Card( "A",  "♦", "Red"));

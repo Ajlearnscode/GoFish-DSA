@@ -11,7 +11,7 @@ public abstract class Player {
 	
 	public Player () {
 		name = "";
-		hand = null;
+		hand = new LinkedList <Card>();
 		score = 0;
 		isBot = false;
 	}

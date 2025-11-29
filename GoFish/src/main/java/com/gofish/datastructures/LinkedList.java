@@ -46,10 +46,10 @@ public class LinkedList<T> {
 	}
 
 	public void insertAtRear(T data) {
-		Node<T> temp1 = new Node<>();
+		Node<T> temp1 = new Node<T>();
 		Node<T> temp2;
 
-		if (temp1 != null) {
+	//	if (temp1 != null) {
 			temp1.setData(data);
 			temp1.setNext(null);
 			if (head == null) {
@@ -61,7 +61,7 @@ public class LinkedList<T> {
 				}
 				temp2.setNext(temp1);
 			}
-		}
+	//	}
 	}
 
 	public void insertAtPosition(T data, int position) {
@@ -137,23 +137,23 @@ public class LinkedList<T> {
 	}
 
 	public int count() {
-
-		Node<T> curr = head;
-		int count = 0;
-		
-		while(curr != null) {
-			curr.getNext();
-			count++;
-		}
-		//Debug
-		System.out.println("The number of nodes in the list: " + count);
-		return count;
+	    Node<T> curr = head;
+	    int count = 0;
+	    
+	    while (curr != null) {
+	        curr = curr.getNext(); // ← FIXED: Actually move to next node!
+	        count++;
+	    }
+	    
+	    // Debug (optional - remove in production)
+	    System.out.println("The number of nodes in the list: " + count);
+	    return count;
 	}
 
 	public void display() {
 		Node<T> curr = head;
 		while (curr != null) {
-			System.out.println(curr.getData());
+			System.out.print(curr.getData());
 			curr = curr.getNext();
 		}
 		System.out.println("End");
