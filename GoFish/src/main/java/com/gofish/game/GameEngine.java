@@ -159,64 +159,293 @@ public class GameEngine {
 			currPlayer.setCurrentPlayerToFirst(currPlayer.getHead());
 			
 			cardsLeft(cardDeck);
+/*****************************************************************AI*******************************************************************/
+			//Start game loop
+			playGame(players, cardDeck, currGamePlayers, scan);
 			
-			//ASK FOR CARD
-			System.out.println("NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-			askForCard(currPlayer, players );
-			
-			
-			
-			
+			scan.close();
 			
 		}
-	
-		//NOT WORKING - November 29, 2025: 1:42 am
-		public static void askForCard(TurnManager<HumanPlayer> currPlayer, ArrayList<HumanPlayer> playerList ) {
+	//start main game loop
+	public static void playGame(ArrayList<HumanPlayer> players, Deck<Card> cardDeck, LinkedList<HumanPlayer> currGamePlayers, Scanner scan) {
+		Node<HumanPlayer> currentPlayerNode = currGamePlayers.getHead();
+		boolean gameOver = false;
+		int totalBooksCollected = 0;
+		
+		System.out.println("\n========== GAME START ==========\n");
+		
+		//Loops until gameOver flag is true
+		//Gets current player from the current node
+		//Displays whose turn it is
+		while(!gameOver) {
+			HumanPlayer currentPlayer = currentPlayerNode.getData();
 			
-			//Current player should ask any player of their choice for a card.
+			System.out.println("\n" + "=".repeat(60));
+			System.out.println("Current Turn: " + currentPlayer.getName());
+			System.out.println("=".repeat(60));
 			
-			//1. We can display the current game players to be asked, but excluding the current player.
-			HashMap<String, Integer> playerMap = new HashMap<>();
-			Node<TurnManager<HumanPlayer>> work;
-			
-			int playerTracker = 0;
-			
-			//String info = currPlayer.getCurrentPlayer(work);
-			//System.out.println(info.toString());
-			
-			for (HumanPlayer player: playerList) {
-				
-				playerMap.put(player.getName(), playerTracker);
-				
-				
-				//if(!player.getName().contains(currPlayer.getCurrentPlayerTruth(currPlayer))) {
-					//System.out.println(playerMap.getOrDefault(player.getName(), playerTracker));
-					System.out.println(playerTracker + " " + player.getName());
-				//}
-				playerTracker++;
+			//Parts of the player turn logic
+			// Check if player's hand is empty - draw 4 cards if deck has cards
+			// in the istruction it says Whenever a player’s hand is empty, they can draw four
+			//(4) additional cards from the deck until it is empty.
+			if(currentPlayer.getHand().isEmpty() && !cardDeck.isEmpty()) {
+				System.out.println(currentPlayer.getName() + "'s hand is empty! Drawing 4 cards...");
+				for(int i = 0; i < 4 && !cardDeck.isEmpty(); i++) {
+					currentPlayer.addCard(cardDeck.drawCard());
+				}
 			}
-		
 			
-			//2. We should display the user's hand to let them know the cards they have in their possession.
-			//3. Allow the player to ask the select player[index] for a card that they have in their hand ONLY 
-				//3.1 make sure that the logic allows only for the card in the current player's hand can be requested
-				//3.2 Do validation checking to ensure that if the player enters an invalid card, they will stay in the while loop until....
-			//4. Write the logic that allows the asked player to check their hand if they have the card.
-				//4.1 If the card is not present --> command the current player to go fish
-				//4.2 if the card is present --> pop the cards that match the rank out of their hand ...
-				// call checkForSets(); make sure that the logic uses the pop method and any other important methods within its body.
+			// If hand is still empty after trying to draw, skip turn
+			if(currentPlayer.getHand().isEmpty()) {
+				System.out.println(currentPlayer.getName() + " has no cards and deck is empty. Skipping turn.");
+				currentPlayerNode = (currentPlayerNode.getNext() != null) ? currentPlayerNode.getNext() : currGamePlayers.getHead();
+				continue;
+			}
 			
+			// Show current player's hand
+			showPlayerHand(currentPlayer);
+			cardsLeft(cardDeck);
 			
+			// Check for books before asking
+			int booksFound = checkForBooks(currentPlayer);
+			totalBooksCollected += booksFound;
 			
+			// Check if game is over (all 13 books collected)
+			if(totalBooksCollected >= 13) { 
+				gameOver = true;
+				break;
+			}
+			
+			// Ask for card part of flowchart
+			boolean keepTurn = askForCard(currentPlayer, players, cardDeck, scan);
+			
+			// Check for books after getting cards
+			booksFound = checkForBooks(currentPlayer);
+			totalBooksCollected += booksFound;
+			
+			// Check if game is over
+			if(totalBooksCollected >= 13 || (cardDeck.isEmpty() && allHandsEmpty(players))) {
+				gameOver = true;
+				break;
+			}
+			//turn logic
+			// Move to next player only if current player didn't get the card they asked for
+			if(!keepTurn) {
+				currentPlayerNode = (currentPlayerNode.getNext() != null) ? currentPlayerNode.getNext() : currGamePlayers.getHead();
+			} else {
+				System.out.println("\n" + currentPlayer.getName() + " gets another turn!");
+			}
+			
+			System.out.println("\nPress Enter to continue...");
+			scan.nextLine();
 		}
 		
-		
-		public static void cardsLeft(Deck<Card> cardDeck) {
-			System.out.println("Remaining Cards: " + cardDeck.cardsRemaining());  
-		}
-		
-		public static void playerInfo(HumanPlayer hPlayer, int count) {
-			System.out.println("\n[Player " + count++ + "]: " + hPlayer.getName() + " [Score: " + hPlayer.getScore() + "]\n");
-		}
+		// GAME OVER AND SHOWS RESULTS
+		displayResults(players);
+	}
 	
+	//Handles asking for cards from other players
+	public static boolean askForCard(HumanPlayer currentPlayer, ArrayList<HumanPlayer> playerList, Deck<Card> cardDeck, Scanner scan) {
+		// Display available players to ask (excluding current player)
+		System.out.println("\nAvailable players to ask:");
+		HashMap<Integer, HumanPlayer> playerMap = new HashMap<>();
+		int index = 1;  //changed to 1 so it stop ask for player 0
+		
+		for(HumanPlayer player : playerList) {
+			if(!player.getName().equals(currentPlayer.getName())) {
+				System.out.println(index + ". " + player.getName() + " [Score: " + player.getScore() + "]");
+				playerMap.put(index, player);
+				index++;
+			}
+		}
+		
+		// Get player choice with better input handling
+		int playerChoice = -1;
+		boolean validInput = false;
+		
+		while(!validInput) {
+			System.out.print("\nSelect player to ask (enter number): ");
+			try {
+				if(scan.hasNextInt()) {
+					playerChoice = scan.nextInt();
+					scan.nextLine(); // consume newline
+					
+					if(playerMap.containsKey(playerChoice)) {
+						validInput = true;
+					} else {
+						System.out.println("Invalid choice! Please select from the list above.");
+					}
+				} else {
+					scan.nextLine(); // consume invalid input
+					System.out.println("Please enter a valid number!");
+				}
+			} catch(Exception e) {
+				scan.nextLine(); // clear buffer
+				System.out.println("Please enter a valid number!");
+			}
+		}
+		
+		HumanPlayer askedPlayer = playerMap.get(playerChoice);
+		
+		// Get rank to ask for (must be in current player's hand)
+		System.out.print("\nWhat rank do you want to ask for? ");
+		String rankToAsk = scan.nextLine().trim().toUpperCase();
+		
+		// Validation - rank must be in current player's hand
+		while(!hasRank(currentPlayer, rankToAsk)) {
+			System.out.print("You don't have that rank! Choose a rank from your hand: ");
+			rankToAsk = scan.nextLine().trim().toUpperCase();
+		}
+		
+		System.out.println("\n" + currentPlayer.getName() + " asks " + askedPlayer.getName() + " for: " + rankToAsk);
+		
+		// Check if asked player has the rank
+		if(hasRank(askedPlayer, rankToAsk)) {
+			// Transfer all cards of that rank
+			LinkedList<Card> cardsToTransfer = askedPlayer.removeCard(rankToAsk);
+			int cardCount = countCards(cardsToTransfer);
+			
+			System.out.println("Yes: " + askedPlayer.getName() + " has " + cardCount + " card(s) of rank " + rankToAsk + "!");
+			
+			// Add cards to current player's hand
+			Node<Card> curr = cardsToTransfer.getHead();
+			while(curr != null) {
+				currentPlayer.addCard(curr.getData());
+				curr = curr.getNext();
+			}
+			
+			System.out.println(currentPlayer.getName() + " received the cards!");
+			return true; // Player gets another turn
+			
+		} else {
+			// Go Fish!
+			System.out.println("-> " + askedPlayer.getName() + " says: GO FISH!");
+			
+			if(!cardDeck.isEmpty()) {
+				Card drawnCard = cardDeck.drawCard();
+				currentPlayer.addCard(drawnCard);
+				System.out.println(currentPlayer.getName() + " drew a card from the deck.");
+				
+				// Check if drawn card matches the rank asked for
+				if(drawnCard.getRank().equals(rankToAsk)) {
+					System.out.println("Lucky! You drew the " + rankToAsk + " you asked for! You get another turn!");
+					return true; // Player gets another turn
+				}
+			} else {
+				System.out.println("Deck is empty! No card to draw.");
+			}
+			
+			return false; // Turn ends
+		}
+	}
+	//helper method - Validate player has a rank before asking for it
+	public static boolean hasRank(HumanPlayer player, String rank) {
+		if(player.getHand().isEmpty()) {
+			return false;
+		}
+		
+		Node<Card> curr = player.getHand().getHead();
+		while(curr != null) {
+			if(curr.getData().getRank().equalsIgnoreCase(rank)) {
+				return true;
+			}
+			curr = curr.getNext();
+		}
+		return false;
+	}
+	//does 3 things from the flowchart the check for set/books, removes the set from hand (ive checked it works) and award a point 
+	public static int checkForBooks(HumanPlayer player) {
+		String[] allRanks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+		int booksFound = 0;
+		
+		for(String rank : allRanks) {
+			int count = countRankInHand(player, rank);
+			
+			if(count == 4) {
+				// Found a book! Remove all 4 cards
+				player.removeCard(rank);
+				player.setScore(player.getScore() + 1);
+				booksFound++;
+				System.out.println("\n " + player.getName() + " collected a BOOK of " + rank + "s! [Score: " + player.getScore() + "]");
+			}
+		}
+		
+		return booksFound;
+	}
+	//Counts how many cards match the given rank part of check for sets logic
+	public static int countRankInHand(HumanPlayer player, String rank) {
+		int count = 0;
+		Node<Card> curr = player.getHand().getHead();
+		
+		while(curr != null) {
+			if(curr.getData().getRank().equalsIgnoreCase(rank)) {
+				count++;
+			}
+			curr = curr.getNext();
+		}
+		
+		return count;
+	}
+	//helper method count how many cards in a link list 
+	public static int countCards(LinkedList<Card> cardList) {
+		int count = 0;
+		Node<Card> curr = cardList.getHead();
+		
+		while(curr != null) {
+			count++;
+			curr = curr.getNext();
+		}
+		
+		return count;
+	}
+	//gameover check uses arraylist iteration
+	public static boolean allHandsEmpty(ArrayList<HumanPlayer> players) {
+		for(HumanPlayer player : players) {
+			if(!player.getHand().isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	//helper method Display current player hand
+	public static void showPlayerHand(HumanPlayer player) {
+		System.out.println("\n" + player.getName() + "'s Hand:");
+		if(player.getHand().isEmpty()) {
+			System.out.println("  [Empty]");
+		} else {
+			Node<Card> curr = player.getHand().getHead();
+			System.out.print("  ");
+			while(curr != null) {
+				System.out.print(curr.getData());
+				curr = curr.getNext();
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void displayResults(ArrayList<HumanPlayer> players) {
+		System.out.println("\n" + "=".repeat(60));
+		System.out.println("GAME OVER!");
+		System.out.println("=".repeat(60));
+		
+		// Find winner
+		HumanPlayer winner = players.get(0);
+		for(HumanPlayer player : players) {
+			System.out.println(player.getName() + " - Score: " + player.getScore() + " books");
+			if(player.getScore() > winner.getScore()) {
+				winner = player;
+			}
+		}
+		
+		System.out.println("\n WINNER: " + winner.getName() + " with " + winner.getScore() + " books!");
+	}
+	//heloer keeps updating when card get drawn as you will see
+	public static void cardsLeft(Deck<Card> cardDeck) {
+		System.out.println("Cards remaining in deck: " + cardDeck.cardsRemaining());
+	}
+	//shows playernum name and initial score
+	public static void playerInfo(HumanPlayer hPlayer, int count) {
+		System.out.println("\n[Player " + count + "]: " + hPlayer.getName() + " [Score: " + hPlayer.getScore() + "]");
+	}
 }
+	
