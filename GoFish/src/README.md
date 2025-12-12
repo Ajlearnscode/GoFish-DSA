@@ -101,3 +101,23 @@ Under the book system: the player with the most books wins.
 --> Continue until all sets are formed or all cards are gone.
 
 --> Highest score wins. Good Game!
+
+#####################################################################################################################################################################################
+
+#Data Structures Choices
+
+The fundamental data structures were employed in the creation of our Go Fish game, such as: Linked List, Stacks, Queues and Node.
+
+Let’s begin with the stack, the linked list, and the unique deck structure based on stacks, because of its Last-In-First-Out (LIFO) behavior, which mimics how a real deck functions, players always draw the card from the top. 
+
+The stack was selected to represent the main deck of cards. This format enables effective operations like drawing cards using constant-time push and pop operations and shuffling, which divides the deck into multiple temporary stacks and recombines them. Since hands in Go Fish continuously expand and contract as players draw cards, pass cards, or form books, the linked list was used to store and manage each player's hand.
+
+A linked list is perfect for determining whether a player has the desired rank while playing because it allows for quick insertion, deletion, and sequential searching. Additionally, it manages dynamic hand sizes more effectively than static arrays. 
+
+Lastly, the game employs a unique deck structure using stacks that arrange the entire set of 52 cards and facilitate operations like initialization, shuffling, counting the number of cards left, and drawing cards by combining stack operations in a controlled, object-oriented way. Together, these data structures, stacks for realistic card handling, linked lists for flexible player hands, and the deck class for centralized card management were chosen because they accurately and efficiently model the game's mechanics, producing a neat, effective, and well-organized implementation.
+
+Continuing on with the Node and Queue: The Node class is used to represent each card in a player’s hand. According to the game rules,  in a two-player game, each player receives seven cards. In the program, these cards are represented as nodes that are linked together to form a single player’s hand, as described in the LinkedList class.
+
+The Queue class manages the number of players participating in the game. As the name suggests, a queue follows the First-In, First-Out (FIFO) principle. In a Go Fish game, the first player to enter their name is the first player to take a turn. The enqueue method handles adding players to the game queue, while the dequeue method removes them once their turn is finished.
+
+After a player completes their turn, regardless of whether they were successful, they are removed from the queue so the next player can proceed. According to the rules of Go Fish, a player asks another for a specific card. If the card is received, they take another turn. If not, they draw from the deck; if the drawn card is the one they asked for, they continue. If not, their turn ends, and they are dequeued.

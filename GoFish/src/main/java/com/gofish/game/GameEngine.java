@@ -326,7 +326,7 @@ public class GameEngine {
 		}
 	}
 	
-	//helper method - Validate player has a rank before asking for it
+	//Validation method - Validate player has a rank before asking for it
 	public static boolean hasRank(HumanPlayer player, String rank) {
 		if(player.getHand().isEmpty()) {
 			return false;
@@ -448,8 +448,7 @@ public class GameEngine {
 	    
 	    StringBuilder sb = new StringBuilder();
 	    sb.append("Game Date/Time: ").append(dtf.format(startTime)).append("\n");
-	    sb.append("Game Duration: ").append(duration.toMinutes()).append(" minutes, ")
-	      .append(duration.toSecondsPart()).append(" seconds\n");
+	    sb.append("Game Duration: ").append(duration.toMinutes()).append(" minutes, ").append(duration.toSecondsPart()).append(" seconds\n");
 	    sb.append("Players & Scores:\n");
 	    
 	    for(HumanPlayer player : players) {
